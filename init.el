@@ -1,0 +1,136 @@
+; package install keycast
+; grip-mode, company, dracula-theme,evil,grip-mode,htmlize,keycast,markdown-mode, monokai-theme,org,org-download,racket-mode,rainbow-mode,uimage
+
+(require 'package)
+(setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
+
+			 ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
+(package-initialize)
+
+;;防止反复调用 package-refresh-contents 会影响加载速度
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;;modeline上显示我的所有的按键和执行的命令
+(package-install 'keycast)
+;(keycast-mode t)
+
+(global-set-key (kbd "s-a") 'mark-whole-buffer) ;;对应Windows上面的Ctrl-a 全选
+(global-set-key (kbd "C-c y") 'kill-ring-save) ;;对应Windows上面的Ctrl-c 复制
+(global-set-key (kbd "s-s") 'save-buffer) ;; 对应Windows上面的Ctrl-s 保存
+(global-set-key (kbd "C-c p") 'yank) ;对应Windows上面的Ctrl-v 粘贴
+(global-set-key (kbd "s-z") 'undo) ;对应Windows上面的Ctrol-z 撤销
+(global-set-key (kbd "s-x") 'kill-region) ;对应Windows上面的Ctrol-x 剪切
+(global-set-key (kbd "C-c s") 'eshell); open a shell
+
+(defun load-config-file()
+  (save-buffer)
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
+
+(global-set-key (kbd "C-c l") 'load-config-file)
+;; close tool-bar
+(tool-bar-mode -1)
+
+;;关闭文件滑动控件
+(scroll-bar-mode -1)
+
+;; 显示行号
+(global-display-line-numbers-mode)
+
+; (setq cursor-type 'bar)
+(icomplete-mode 1)
+
+;; 快速打开配置文件
+(defun open-init-file()
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
+
+;; 这一行代码，将函数 open-init-file 绑定到 <f2> 键上
+(global-set-key (kbd "<f2>") 'open-init-file)
+
+;; 快速打开配置文件
+(defun open-org()
+  (interactive)
+  (find-file "~/Documents/org/org_mode.org"))
+
+;; 这一行代码，将函数 open-init-file 绑定到 <f2> 键上
+(global-set-key (kbd "<f4>") 'open-org)
+
+					; 开启全局 Company 补全
+(global-company-mode 1)
+
+;; company mode 默认选择上一条和下一条候选项命令 M-n M-p
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(uimage monokai-theme org-download grip-mode keycast htmlize rainbow-mode racket-mode dracula-theme org markdown-mode evil company)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+; (load-theme 'dracula t)
+
+(setq org-src-fontify-natively t)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (R . t)
+   (C . t)
+   (python . t)
+   (makefile . t)
+   (awk . t)
+   (latex . t)
+   (shell . t)))
+
+
+;; change font size
+(set-face-attribute 'default nil :height 160)
+
+;; Latex syntax hightlight
+(setq org-highlight-latex-and-related '(latex))
+
+;; use minted to hightlight the source code
+; (add-to-list 'org-latex-packages-alist '("" "minted"))
+
+; change todo keywords
+(setq org-todo-keywords '((sequence "TODO(t)" "DOING(i)" "|" "DONE(d)" "ABORT(a)")))
+
+; recent files
+(recentf-mode 1)
+(setq recentf-max-menu-items 10)
+(setq recentf-max-saved-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+; remember previous editing positon
+(save-place-mode 1)
+
+; enable inline-images 
+;;; org-download
+(require 'org-download)
+(setq org-download-screenshot-method "flameshot gui --raw >%s")
+; (setq org-download-method 'directory)
+(setq-default org-download-heading-lvl nil)
+(setq-default org-download-image-dir "./images")
+(defun dummy-org-download-annotate-function (link)
+  "")
+(setq org-download-annotate-function
+      #'dummy-org-download-annotate-function)
+
+
+;; Or start grip when opening a markdown/org buffer
+; (add-hook 'org-mode-hook #'grip-mode)
+
+
+(global-hl-line-mode 1)
+(package-install 'monokai-theme)
+;(load-theme 'monokai 2)
