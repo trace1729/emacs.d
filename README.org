@@ -3,7 +3,7 @@
 #+LATEX_COMPILER: xelatex
 #+LATEX_HEADER: \usepackage{ctex}
 
-
+; 作为 readme
 
 * 标题
 
@@ -324,13 +324,14 @@ x = \sqrt{2}
   #+end_src
 
 - **如何记录文件上次打开位置** =(save-place-mode 1)=
-- 如何插入tab？ =+Tab=
+- 如何插入tab？ =C-q + Tab=
 - 如何预览？grip-mode 插件
 - 如何显示图片链接？org-download 插件 org-download-yank
   - 或者启用 uimage-mode
   - 测试一下
     [[https://image-trace.oss-cn-shanghai.aliyuncs.com/img/20231110114243.png]]
- 
+
+    
 * Footnotes
 
 [fn:1] [[http://www.latexlive.com]]
