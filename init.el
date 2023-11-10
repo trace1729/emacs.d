@@ -52,10 +52,10 @@
 ;; 快速打开配置文件
 (defun open-org()
   (interactive)
-  (find-file "~/Documents/org/org_mode.org"))
+  (find-file "~/Documents/org/TODO.org"))
 
-;; 这一行代码，将函数 open-init-file 绑定到 <f2> 键上
-(global-set-key (kbd "<f4>") 'open-org)
+;; 这一行代码，将函数 open-init-file 绑定到  键上
+(global-set-key (kbd "C-c t") 'open-org)
 
 					; 开启全局 Company 补全
 (global-company-mode 1)
