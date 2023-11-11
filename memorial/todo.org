@@ -1,0 +1,47 @@
+#+TITLE: 代办事项
+
+#+begin_quote
+第一次尝试使用 org mode 做代办事项，希望能坚持下去
+#+end_quote
+
+<2023-11-10 五>
+* ABORT 一生一芯
+- 一生一芯 B 阶段 [0%] 
+  - [ ] PA2.1
+  - [ ] risc-v reader 
+* DONE 熟悉 emacs org mode
+- 了解如何在 org 中预览 url图片 [66%]
+  - [X] 使用 =uimage-mode=
+  - [X] 使用 org-download，org-download-yank 会读取剪辑版的链接，并下载到本地文件夹
+    再将链接粘贴到 org 文档中
+* DONE 熟悉 Gimp
+* ABORT 其他
+- 邮寄调函
+  - [ ] 搞清楚 =联系人= =电话= 填什么
+  - [ ] 这个调函是谁填的
+  - [ ] 邮寄
+  - [ ] 微信说明原因
+
+<2023-11-11 六>
+
+* TODO 一生一芯
+- 一生一芯 B 阶段 [0%] 
+  - [ ] PA2.1
+  - [ ] risc-v reader 
+* DONE 熟悉 emacs org mode
+- 安装包的时候，遇到了 =Expired ELPA GPG Keys= 的问题，参考 [[https://metaredux.com/posts/2019/12/09/dealing-with-expired-elpa-gpg-keys.html][expired elpa keys]] 未能解决，最后通过换源解决了（我也不懂
+  但是又不是不能用。 
+- 看 =21天学会 emacs= 学习更多 emacs 的操作。
+  - 使用 vertico 和 Orderless 增强 minibuffer 的阅读体验
+  - 使用 Marginalia 增强 minubuffer 的 annotation
+  - 使用 embark 实现 context action
+  - 使用 consult 实现 快速查找 C-h k/f/v
+  - 自定义 打开当前文件所在文件夹
+  - 使用 doom-one 主题 增强显示效果
+- 看 [[https://mickey991.gitee.io/][金色飞贼的博客]]
+  - 使用 pdf-tools 替换 DocView 来增强 emacs 类阅读体验
+  - 使用 org-noter 实现 emacs 下 对 pdf 文档做笔记
+  - 使用 fanyi 插件 实现 emacs 内部查词
+
+emacs 真是全能
+    

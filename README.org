@@ -313,6 +313,9 @@ x = \sqrt{2}
 \end{equation}
 
 ** 其他杂项
+:PROPERTIES:
+:NOTER_DOCUMENT: org_mode.org
+:END:
 
 - **如何开启历史打开文件**
   #+begin_src elisp
