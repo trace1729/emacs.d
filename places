@@ -1,8 +1,11 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/trace/.emacs.d/README.org" . 5620)
- ("/home/trace/.emacs.d/init.el" . 1623)
- ("/home/trace/Documents/org/TODO.org" . 417)
- ("/home/trace/Documents/org/org_mode.org" . 2049)
+(("/home/trace/.emacs.d/init.el" . 4251)
+ ("/home/trace/Documents/org/TODO.org" . 741)
+ ("/home/trace/.emacs.d/README.org" . 5805)
+ ("/home/trace/trace/learning/programming/python/emacs.py" . 125)
+ ("/home/trace/.emacs.d/"
+  (dired-filename . "/home/trace/.emacs.d/init.el"))
+ ("/home/trace/Documents/org/org_mode.org" . 5690)
  ("/home/trace/trace/notes/verilog_lab.md" . 487)
  ("/home/trace/Documents/org/系统文件备忘.org" . 390)
  ("/home/trace/Documents/org/备忘录.org" . 75)

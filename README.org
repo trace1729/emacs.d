@@ -13,9 +13,9 @@
 ** 代码实例
 
 #+begin_src org
-  * 这是一个一级标题
-  ** 这是一个二级标题
-  *** 这是一个三级标题
+  ,* 这是一个一级标题
+  ,** 这是一个二级标题
+  ,*** 这是一个三级标题
 #+end_src
 
 ** 大纲相关的快捷键
@@ -331,7 +331,8 @@ x = \sqrt{2}
   - 测试一下
     [[https://image-trace.oss-cn-shanghai.aliyuncs.com/img/20231110114243.png]]
 
-    
+
+
 * Footnotes
 
 [fn:1] [[http://www.latexlive.com]]
