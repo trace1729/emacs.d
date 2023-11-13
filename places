@@ -1,14 +1,21 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/trace/Documents/org/pdf_notes/rvbook.org" . 56)
- ("/home/trace/.emacs.d/init.el" . 8270)
- ("/home/trace/.emacs.d/elpa/fanyi-20230926.1849/fanyi.el" . 5443)
+(("/home/trace/Documents/org/TODO.org" . 1412)
+ ("/home/trace/Documents/org/pdf_notes/rvbook.org" . 56)
+ ("/home/trace/.emacs.d/init.el" . 1757)
+ ("/home/trace/Documents/org/"
+  (dired-filename . "/home/trace/Documents/org/pdf_notes"))
+ ("/home/trace/Documents/org/pdf_notes/"
+  (dired-filename . "/home/trace/Documents/org/pdf_notes/rvbook.org"))
+ ("/home/trace/Documents/org/pdf_notes/log" . 362)
+ ("/home/trace/Downloads/dl/" . 418)
+ ("/home/trace/Downloads/dl/layers_1.py" . 71)
+ ("/home/trace/Downloads/dl/__pycache__/"
+  (dired-filename . "/home/trace/Downloads/dl/__pycache__/layers_1.cpython-311.pyc"))
+ ("/home/trace/Downloads/dl/mnist_mlp_cpu.py" . 34)
  ("/home/trace/.emacs.d/elpa/pdf-tools-20230611.239/pdf-sync.el" . 3114)
- ("/home/trace/Documents/org/TODO.org" . 1115)
  ("/home/trace/Documents/ouline.org" . 324)
  ("/home/trace/Documents/"
   (dired-filename . "/home/trace/Documents/ouline.pdf"))
- ("/home/trace/Documents/org/"
-  (dired-filename . "/home/trace/Documents/org/org_mode.org"))
  ("/home/trace/Documents/org/org_mode.org" . 5853)
  ("/home/trace/.emacs.d/README.org" . 5805)
  ("/home/trace/trace/learning/programming/python/emacs.py" . 125)

@@ -41,6 +41,15 @@
 (global-set-key (kbd "C-c C-t") 'open-org)
 
 
+;; 快速进入 rv book
+(defun open-rv()
+  (interactive)
+  (find-file "~/Documents/rvbook.pdf")
+  (org-noter))
+
+;; 这一行代码，将函数 open-init-file 绑定到  键上
+(global-set-key (kbd "<f4>") 'open-rv)
+
 ;================ user defined function =====================;
 
 (defun consult-directory-externally (file)
@@ -258,3 +267,8 @@
 (define-key pdf-view-mode-map "k" 'pdf-view-scroll-down-or-previous-page) ;; 向上滑动
 
 ; ====================== pdf-tools ======================================;
+
+;; fanyi
+
+(global-set-key (kbd "C-c f") 'fanyi-dwim2)
+(global-set-key [(control return)] 'calculator)

@@ -51,8 +51,10 @@ emacs 真是全能
   重新为 双击鼠标 绑定了新的函数：选中一个词。
 - emacs 折腾就到此结束了，不再折腾配置，有时间再说。
 
-
+<2023-11-13 一>
 * TODO 一生一芯 计划
 - 一生一芯 B 阶段
-  - [ ] PA2.1
-  - [ ] the risc-v reader
+  - [X] the risc-v reader; chapter one
+  - [ ] PA2.2
+
+
