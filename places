@@ -1,8 +1,10 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/trace/Documents/org/TODO.org" . 1115)
- ("/home/trace/.emacs.d/init.el" . 2045)
+(("/home/trace/Documents/org/pdf_notes/rvbook.org" . 56)
+ ("/home/trace/.emacs.d/init.el" . 8270)
+ ("/home/trace/.emacs.d/elpa/fanyi-20230926.1849/fanyi.el" . 5443)
+ ("/home/trace/.emacs.d/elpa/pdf-tools-20230611.239/pdf-sync.el" . 3114)
+ ("/home/trace/Documents/org/TODO.org" . 1115)
  ("/home/trace/Documents/ouline.org" . 324)
- ("/home/trace/Documents/org/pdf_notes/rvbook.org" . 56)
  ("/home/trace/Documents/"
   (dired-filename . "/home/trace/Documents/ouline.pdf"))
  ("/home/trace/Documents/org/"

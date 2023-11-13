@@ -336,6 +336,7 @@ x = \sqrt{2}
 
 
 
+
 * Footnotes
 
 [fn:1] [[http://www.latexlive.com]]

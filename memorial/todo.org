@@ -23,7 +23,6 @@
   - [ ] 微信说明原因
 
 <2023-11-11 六>
-
 * TODO 一生一芯
 - 一生一芯 B 阶段 [0%] 
   - [ ] PA2.1
@@ -44,4 +43,16 @@
   - 使用 fanyi 插件 实现 emacs 内部查词
 
 emacs 真是全能
-    
+
+<2023-11-12 日>
+* TODO 熟悉 emacs org mode
+- 了解了 local-set-key, global-set-key 和 minor-key-map 之间的区别 (优先级)
+  为 pdf-view-mode 自定义了一些属性，比如在pdf-view-mode下关闭 =显示行号=, =当前行高亮=.
+  重新为 双击鼠标 绑定了新的函数：选中一个词。
+- emacs 折腾就到此结束了，不再折腾配置，有时间再说。
+
+
+* TODO 一生一芯 计划
+- 一生一芯 B 阶段
+  - [ ] PA2.1
+  - [ ] the risc-v reader

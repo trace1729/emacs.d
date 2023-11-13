@@ -16,6 +16,7 @@
 (global-set-key (kbd "s-z") 'undo) ;对应Windows上面的Ctrol-z 撤销
 (global-set-key (kbd "s-x") 'kill-region) ;对应Windows上面的Ctrol-x 剪切
 (global-set-key (kbd "C-c s") 'eshell); open a shell
+(global-set-key (kbd "C-c r") 'recentf-open-files)
 
 ;-----------------      file         ------------------------;
 (defun load-config-file()
@@ -56,7 +57,6 @@
   (interactive)
   (consult-directory-externally default-directory))
 
-;(define-key embark-file-map (kbd "E") #'consult-directory-externally)
 
 ;---------------- custmisze editor apperance ----------------;
 ;; close tool-bar
@@ -65,11 +65,14 @@
 ;;关闭文件滑动控件
 (scroll-bar-mode -1)
 
-;; 显示行号
+;; 指定在 prog 和 text mode 下显示行号
 ;(global-display-line-numbers-mode)
 (add-hook 'prog-mode-hook (lambda() (display-line-numbers-mode 1)))
 (add-hook 'text-mode-hook (lambda() (display-line-numbers-mode 1)))
-(add-hook 'pdf-view-mode (lambda() (display-line-numbers-mode nil)))
+(add-hook 'prog-mode-hook (lambda() (hl-line-mode 1)))
+(add-hook 'text-mode-hook (lambda() (hl-line-mode 1)))
+
+;(add-hook 'pdf-view-mode (lambda() (display-line-numbers-mode nil)))
 
 ;; change font size
 (set-face-attribute 'default nil :height 160)
@@ -77,7 +80,7 @@
 ;; Latex syntax hightlight
 (setq org-highlight-latex-and-related '(latex))
 ; 高亮当前行
-(global-hl-line-mode 1)
+; (global-hl-line-mode 1)
 
 ;; use minted to hightlight the source code
 ; (add-to-list 'org-latex-packages-alist '("" "minted"))
@@ -89,7 +92,6 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 10)
 (setq recentf-max-saved-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ; remember previous editing positon
 (save-place-mode 1)
@@ -105,7 +107,7 @@
 
 (global-auto-revert-mode 1)
 ; (icomplete-mode 1)
-
+(setq ring-bell-function 'ignore)
 
 ; ----------------------- custom -----------------------;
 
@@ -169,6 +171,11 @@
       #'dummy-org-download-annotate-function)
 
 
+; 在查找文件时，加入一个自定义动作，打开当前文件的目录
+(require 'embark)
+(eval-after-load 'embark
+  '(define-key embark-file-map (kbd "E") #'consult-directory-externally))
+
 ;; Or start grip when opening a markdown/org buffer
 ; (add-hook 'org-mode-hook #'grip-mode)
 
@@ -187,19 +194,67 @@
 (setq prefix-help-command 'embark-prefix-help-command)
 
 ; replace swiper
-(global-set-key (kbd "C-s") 'consult-line)
+; (global-set-key (kbd "C-s") 'consult-line)
+; 为了不在 pdf-mode 里触发 consult-line
+; 原来是因为 打开pdf 文件不会自动打开 pdf-mode ...
+(add-hook 'prog-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
+(add-hook 'text-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
+;(add-hook 'pdf-sync-minor-mode (lambda() (local-set-key [double-mouse-1] 'mouse-set-region)))
+
 ;;consult-imenu
+
 (global-set-key (kbd "C-c i") 'consult-imenu)
 
 ;; org-noter
 (setq org-noter-notes-search-path '("/home/trace/Documents/org/pdf_notes")) ;; 默认笔记路径
 (setq org-noter-auto-save-last-location t) ;; 自动保存上次阅读位置
+(setq org-noter-highlight-selected-text t)
 (setq org-noter-max-short-selected-text-length 20) ;; 默认为 80
 (setq org-noter-default-heading-title "第 $p$ 页的笔记") ;; 默认短标题格式
 (global-set-key (kbd "C-c n n") 'org-noter) ;; 与 org-roam 配合
 
 
-;; pdf-tools
+; =========================== pdf-tools ==================================;
+
 (pdf-loader-install)
 (add-hook 'pdf-view-mode-hook 'pdf-view-fit-width-to-window) ;; 自动放大到页宽
+;(define-key pdf-sync-minor-mode-map [double-mouse-1] 'pdf-sel-mode)
 
+(defvar pdf-sel-mode-map nil
+  "Keymap for `pdf-sel-mode'.")
+
+(setq pdf-sel-mode-map
+      (let ((map (make-sparse-keymap)))
+    (define-key map [double-mouse-1] 'pdf-sel-mouse)
+    map))
+
+(define-minor-mode pdf-sel-mode
+  "\\<pdf-sel-mode-map>Just binding \\[pdf-sel-mouse] to `pdf-sel-mouse'.
+`pdf-sel-mouse' selects the text at point and copies it to `kill-ring'."
+  :keymap pdf-sel-mode-map)
+
+(defvar pdf-view-active-region) ;; defined in "pdf-view.el"
+
+(defun pdf-sel-mouse (ev)
+  "Select word at mouse event EV and copy it to `kill-ring'."
+  (interactive "@e")
+  (let* ((posn (event-start ev))
+     (xy (posn-object-x-y posn))
+     (size (pdf-view-image-size))
+     (page (pdf-view-current-page))
+     (x (/ (car xy) (float (car size))))
+         (y (/ (cdr xy) (float (cdr size)))))
+    (setq pdf-view-active-region (pdf-info-getselection page (list x y x y) 'word))
+    (pdf-view-display-region pdf-view-active-region)
+    (kill-new (pdf-info-gettext page (list x y x y) 'word))))
+
+; 关闭 sync mode
+; 打开 sel mode
+(add-hook 'pdf-view-mode-hook (lambda () (setq pdf-sync-minor-mode nil)))
+(add-hook 'pdf-view-mode-hook (lambda () (setq pdf-sel-mode t)))
+
+(require 'pdf-tools)
+(define-key pdf-view-mode-map "j" 'pdf-view-scroll-up-or-next-page) ;; 向下滑动
+(define-key pdf-view-mode-map "k" 'pdf-view-scroll-down-or-previous-page) ;; 向上滑动
+
+; ====================== pdf-tools ======================================;
