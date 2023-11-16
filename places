@@ -1,7 +1,8 @@
 ;;; -*- coding: utf-8; mode: lisp-data -*-
-(("/home/trace/Documents/org/TODO.org" . 1412)
+(("/home/trace/trace/learning/ysyx/ysyx-workbench/PA2.org" . 1258)
+ ("/home/trace/Documents/org/TODO.org" . 2046)
  ("/home/trace/Documents/org/pdf_notes/rvbook.org" . 56)
- ("/home/trace/.emacs.d/init.el" . 1757)
+ ("/home/trace/.emacs.d/init.el" . 8734)
  ("/home/trace/Documents/org/"
   (dired-filename . "/home/trace/Documents/org/pdf_notes"))
  ("/home/trace/Documents/org/pdf_notes/"
@@ -13,7 +14,6 @@
   (dired-filename . "/home/trace/Downloads/dl/__pycache__/layers_1.cpython-311.pyc"))
  ("/home/trace/Downloads/dl/mnist_mlp_cpu.py" . 34)
  ("/home/trace/.emacs.d/elpa/pdf-tools-20230611.239/pdf-sync.el" . 3114)
- ("/home/trace/Documents/ouline.org" . 324)
  ("/home/trace/Documents/"
   (dired-filename . "/home/trace/Documents/ouline.pdf"))
  ("/home/trace/Documents/org/org_mode.org" . 5853)

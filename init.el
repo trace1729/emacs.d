@@ -117,7 +117,10 @@
 (global-auto-revert-mode 1)
 ; (icomplete-mode 1)
 (setq ring-bell-function 'ignore)
-
+; 关闭菜单栏
+(menu-bar-mode 0)
+; 关闭 启动界面
+(setq inhibit-startup-message t)
 ; ----------------------- custom -----------------------;
 
 (custom-set-variables
@@ -193,7 +196,7 @@
 (setq completion-styles '(orderless))
 ;;modeline上显示我的所有的按键和执行的命令
 ; keycast
-(keycast-mode-line-mode t)
+; (keycast-mode-line-mode t)
 
 ; enhancing minibuffer
 (marginalia-mode t)
@@ -261,6 +264,7 @@
 ; 打开 sel mode
 (add-hook 'pdf-view-mode-hook (lambda () (setq pdf-sync-minor-mode nil)))
 (add-hook 'pdf-view-mode-hook (lambda () (setq pdf-sel-mode t)))
+
 
 (require 'pdf-tools)
 (define-key pdf-view-mode-map "j" 'pdf-view-scroll-up-or-next-page) ;; 向下滑动
