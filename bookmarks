@@ -1,0 +1,14 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("slli"
+ (filename . "~/Documents/rvbook.pdf")
+ (position . 1)
+ (last-modified 25942 10142 474637 546000)
+ (page . 180)
+ (slice)
+ (size . 2.1944444444444446)
+ (origin 0.0 . 0.1354309165526676)
+ (handler . pdf-view-bookmark-jump-handler))
+)

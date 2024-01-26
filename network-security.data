@@ -1,0 +1,4 @@
+;;;; -*- mode: lisp-data -*-
+(
+ (:id "sha1:fb978c85c0cf3c9d62d497157827b311f7197e87" :fingerprints ("sha1:54:e1:d4:09:92:73:ae:f1:d8:a3:a5:2d:b5:34:4e:44:b8:7a:70:b6") :host "www.gnu.org:443" :conditions (:self-signed :no-host-match :unknown-ca :invalid :verify-cert))
+)

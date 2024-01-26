@@ -1,0 +1,507 @@
+#+TITLE: 代办事项
+
+#+begin_quote
+第一次尝试使用 org mode 做代办事项，希望能坚持下去
+#+end_quote
+
+
+* **第八周** <2023-11-10 五>
+** ABORT 一生一芯
+- 一生一芯 B 阶段 [0%]
+  - [ ] PA2.1
+  - [ ] risc-v reader
+** DONE 熟悉 emacs org mode
+- 了解如何在 org 中预览 url图片 [66%]
+  - [X] 使用 =uimage-mode=
+  - [X] 使用 org-download，org-download-yank 会读取剪辑版的链接，并下载到本地文件夹
+    再将链接粘贴到 org 文档中
+  - [ ] 无法上传剪辑版中的图片 wl-paste?
+** DONE 熟悉 Gimp
+** ABORT 其他
+- 邮寄调函
+  - [ ] 搞清楚 =联系人= =电话= 填什么
+  - [ ] 这个调函是谁填的
+  - [ ] 邮寄
+  - [ ] 微信说明原因
+
+* <2023-11-11 六>
+** TODO 一生一芯
+- 一生一芯 B 阶段 [0%]
+  - [ ] PA2.1
+  - [ ] risc-v reader
+** DONE 熟悉 emacs org mode
+- 安装包的时候，遇到了 =Expired ELPA GPG Keys= 的问题，参考 [[https://metaredux.com/posts/2019/12/09/dealing-with-expired-elpa-gpg-keys.html][expired elpa keys]] 未能解决，最后通过换源解决了（我也不懂
+  但是又不是不能用。
+- 看 =21天学会 emacs= 学习更多 emacs 的操作。
+  - 使用 vertico 和 Orderless 增强 minibuffer 的阅读体验
+  - 使用 Marginalia 增强 minubuffer 的 annotation
+  - 使用 embark 实现 context action
+  - 使用 consult 实现 快速查找 C-h k/f/v
+  - 自定义 打开当前文件所在文件夹
+  - 使用 doom-one 主题 增强显示效果
+- 看 [[https://mickey991.gitee.io/][金色飞贼的博客]]
+  - 使用 pdf-tools 替换 DocView 来增强 emacs 类阅读体验
+  - 使用 org-noter 实现 emacs 下 对 pdf 文档做笔记
+  - 使用 fanyi 插件 实现 emacs 内部查词
+
+emacs 真是全能
+* <2023-11-12 日>
+** DONE 熟悉 emacs org mode
+- 了解了 local-set-key, global-set-key 和 minor-key-map 之间的区别 (优先级)
+  为 pdf-view-mode 自定义了一些属性，比如在pdf-view-mode下关闭 =显示行号=, =当前行高亮=.
+  重新为 双击鼠标 绑定了新的函数：选中一个词。
+- emacs 折腾就到此结束了，不再折腾配置，有时间再说。
+
+* **第八周summery** 配置 emacs
+
+* **第九周** <2023-11-13 一>
+** DONE 一生一芯 计划
+- 一生一芯 B 阶段
+  - [X] the risc-v reader; chapter one
+  - [X] PA2.1 看了开头一点点
+
+* <2023-11-14 二>
+** DONE 一生一芯 计划
+- 一生一芯 B 阶段
+  - [X] PA2.1
+    阅读 nemu if, id 两阶段的代码。
+    通过 宏展开 (macro decode) 手动 loop unrolling 震撼我一年
+    还有 使用 goto *label 语法实现 模式匹配。
+    优雅优雅
+    顺便再熟悉了下 make 和 awk
+
+* <2023-11-15 三>
+** DONE 一生一芯 计划
+- 一生一芯 B 阶段
+  - [X] PA2.1
+    开始尝试添加指令，首先遇到的问题是，伪指令到底怎么实现。
+    结果发现伪指令就是便于阅读，实际上就是 base instruction set里的某一个指令
+    还有 little endian 和 big endian 的区别。高位低位傻傻分不清
+    最后一个问题是c语言中，如何储存指令中的立即数。要记得 sign extend。
+
+* <2023-11-16 四>
+** ysyx
+- B 阶段
+  - [X] PA2.1
+    开始尝试实现 risc-v base instruction set
+    写了一个 filter 脚本快速查找反编译出来的程序中还没实现的指令
+    bash 是真的好用
+    实现过程中发现的问题：
+    立即数如何生成，以及符号扩展和无符号扩展的区别
+
+** 杂活
+
+- 优秀班级评选？
+
+* <2023-11-17 五>
+** ysyx
+
+- B 阶段
+  - [X] PA2.1 收尾
+  - [ ] 裸机讲解视频
+  - [ ] PA2.2
+  - [X] 准备分享会
+
+* <2023-11-19 六>
+** 分享会
+- [X] 开展分享会，内容为 宣传 Linux 以及 一生一芯项目
+      分享会内容在 [[~/Repo/jyyslide-md/preview.pdf]]
+
+* <2023-11-19 日>
+** ysyx
+- B 阶段
+ - [ ] 裸机讲解视频
+
+** 电工电子作业
+* **第九周summery** 完成 PA2.1
+
+* **第十周** <2023-11-20 一>
+
+** ysyx
+- B 阶段 PA2.2
+  - [X] 看 abstract machine 代码导读
+  - [X] 阅读 abstract machine Makefile
+  - [ ] 完成 讲义中的黄框题
+
+也许可以，出一个视频讲解一下 am 神奇的 Makefile.
+
+* <2023-11-21 二>
+
+** ysyx
+- B 阶段 PA2.2
+  - [X] 完成讲义中的黄框题
+  - [ ] 基础设置(2) 各种 trace
+
+* <2023-11-22 三>
+
+** ysyx
+- B 阶段 PA2.2
+  - [X] iringtrace
+  - [ ] mtrace
+  - [ ] ftrace
+
+* <2023-11-23 四> <2023-11-24 五>
+
+** ysyx
+- B 阶段 PA2.2
+  - [X] iringtrace
+    - 学习了 ring buffer 的相关知识
+      有关 ring buffer 的笔记在 onenote 中, 后续会迁移到 PA2.org 中
+    - static inline 是什么
+    - 在目前的实现中，没有办法很好的利用 ITRACE 的代码
+      当程序出现异常的时候，会直接进入 panic, 不会进入 itrace 的代码段
+      我需要单独处理最后一条指令。(copy and pasted itrace code)
+      而且调用了 inst_fetch 函数，这个函数的声明是 static inline.
+      定义在头文件里, 不知道我这样写是不是符合规范，文档里也不太查得到。
+  - [X] mtrace
+    - 可以使用 menuconfig 来打开/关闭 mtrace
+    - 可以对 mtrace 的输出做一些限制 (比如只跟踪某一个地址范围的数据)
+  - [X] ftrace
+    - [X] 手写需要 =man elf= 阅读文档看如何解析 elf 文件
+    - [X] 在指令执行的时候，对函数跳转指令做一些而外的处理，记录跳转的地址，并且
+      通过对比 elf symbol entry 中 TYPE 为 func 项的地址范围，确定对应的函数字符串偏移量，
+      接着根据 strtab 的地址，计算出函数字符串的开始位置，这样我们就获取到了函数名称。
+      我们需要什么？
+      - iterate symbol table entry, and get the value
+      - elf section headers
+      - c 语言文件操纵函数
+      - fread 可否从文件批量读取结构体
+      - symtab 是否一定是在 section header 的倒数第三项吗？
+	gpt 告诉我这不一定
+      - e_shstrndx 保存了 shstrtab 在 section header table 的index
+	这样可以根据 section header 的 name, 来找到对应的字符串,
+	这样可以解决 如何在多个 sh_type 为 SHT_STRTAB 的 section header 中找到 strtab
+      - section header 有 保存 section 的大小，和每一个 section entry 的 大小，这样可以计算出 entry 的
+	数量。
+	sh_size / sh_entsize
+      - 最后一个问题是，如果从文件中读取一个 null terminated string, 目前想到的办法是一个字符一个字符的读，
+	不知道有没有更快的方法
+    - [X] 需要判断是函数调用还是函数返回
+          函数返回：
+	  	jalr x0 0(ra)
+	  函数跳转
+	  ra 一般都是保存 PC + 4，方便在函数调用后，跳转回来
+	  	jar  ra label
+		jalr ra [0-9]*(rs1)
+	  不需要保存返回值的特殊情况：尾调用
+      * jalr x0 [0-9]*(rs1)
+      #+begin_example
+      比如 main -> f1 -> f2
+      可由 f2 直接返回 main:
+	   main <------  f2
+      而不需要:
+	   main <- f1 <- f2
+      #+end_example
+    - [X] 需要对库函数进行充分的测试。
+
+* <2023-11-25 六>
+
+- 这些 trace 到底有什么用处?
+  ftrace 记录函数调用次数，为函数调用次数多的进行优化
+  itrace 可以用来分析跳转指令
+  mtrace 可以用来分析那一块数据访问的比较多，对 cache 设备的 evidct 哪一个数据具有知道意义
+
+- 如何使用这些 trace, 通过make menuconfig在 tui 中配置
+
+* <2023-11-26 日>
+
+- 测试 klib
+- 接入 diff test
+
+* **第十周summery**: 完成 PA2.2
+
+
+* **第十一周** <2023-11-27 一>
+
+- [X] ysyx 视频课第11讲
+- [ ] 开始做 PA2.3
+
+* <2023-11-28 二> <2023-11-29 三> <2023-11-30 四>
+
+- [-] PA2.3
+  - [X] printf
+    - 如何在两个同时接受变长参数的函数之间传递参数呢？
+      原本打算使用 =__VA_ARGS__= 展开参数，但是发现这个宏只能在 define 里用
+      直接传不了怎么办呢？遇事不决，叠一层抽象==。把函数实现提取到一个新函数里。
+      然后原来两个函数将变长参数列表传递到这个新函数。主要的功能实现放在这个新函数里。
+  - [X] 时钟，跑 bench mark
+    1. =IOMAP= 里，space 这个成员是指向什么位置的？他和 low 说指向的物理位置有什么区别？
+        space 是 nemu 给设备实际分配的物理空间，low-high 是提供给应用程序的抽象地址
+
+    2. 如果 ioe_read 和 ioe_write 的接受的参数都是一样的，那要如何判断是读还是写呢？
+    	通过函数接受的结构体参数判断是读还是写。
+
+    3. 运行 benchmark 的时候，nemu出现segment fault
+    	关闭了trace，但是仍然读取了测试程序的elf文件，elf文件的函数过多，导致数组越界，触发 segmentfault
+    4. dhrystone 测试没能通过
+       加一条 printf 语句就能通过？？
+  - [X] 键盘
+    1. 如何检测多个按键被按下？
+  - [X] VGA
+    1. 正确实现后帧率突然降低？？
+    	重启解决一切.jpg
+  - [ ] 声卡
+
+* <2023-12-02 六>
+入学答辩
+锻炼解决未知问题的能力
+1. 不只局限于课本、讲义上的知识。
+2. 如何捋清一个大型项目各个模块之间是如何相互联系的。
+3. 依靠自己来学习。
+4. 允许自己走弯路、接受代码不能一次写好。
+   在问题未知的时候，是很难做出正确判断的，我们要在敢于试错
+
+
+* <2023-12-03 日>
+
+- 阅读 verilator Makefile
+- 复习 verilog
+- 尝试构建 addi 数据通路
+  - 时钟信号 clk 应当由 cpp 测试程序提供
+    top->eval() 之后对时钟信号取反就行。
+
+双周汇报
+
+** 进度
+- 完成 PA2.2, PA2.3
+  - 在 nemu 上运行 micro-bench
+
+#+attr_org: :height 20% :width 20%
+[[file:images/2023-12-03_23-40-32_2023-12-03_22-38.png]]
+
+  - 在 nemu 上运行 mario
+
+#+attr_org: :height 20% :width 20%
+[[file:images/2023-12-03_23-44-36_2023-12-03_19-06.png]]
+
+** 两个历史遗留问题
+
+- [ ] dhrystone benchmark 无法通过，目前判断是 代码对齐 问题，有待进一步探索
+- [ ] 游戏运行帧率时高时低，怀疑是机器问题
+
+
+
+* **第十二周**
+
+- [X] 第五次电工作业
+
+* <2023-12-05 二>
+
+- 将 verilog 的 cpp wrapper 改写成符合 c++11 规范的
+- 正确设置 pc 的初始值
+- 设计单周期处理器的各个模块
+
+* <2023-12-06 三>
+
+- 实现 addi 数据通路，尝试进行测试。
+  - 不太清楚使用 verilog 的 testbench 是否能进行测试
+    创建一个 tb_xxx module, 在这里面实例化我们要测试的 module。
+    测试的方式是检测 module 在给定输入下的波形图，本质上还是波形的检测。(如果是涉及到时序逻辑电路)
+  - 与在 cpp wrapper 下使用 printf 进行调试哪一个更好
+    printf 会更加直观，但是我怎么获取到子模块的输入？
+  - 或者直接看波形
+
+* <2023-12-07 五> <2023-12-09 六>
+
+debug, regfile 的表现一直不正常。
+我不清楚到底是哪一个模块出现了问题，
+应该尝试为 regfile 编写单元测试。
+参考一下，61c 的测试是怎么写的。
+
+指令，数据，参考。
+
+如果我需要实现一个正确的 rtl, 最好是先使用 高级语言 设计一个正确的实例。
+在通过高级语言的实例来进行仿真测试。
+
+修正 addi 单周期实现，inst 的类型应该是 input 而不是 output
+
+
+* 第十三周 <2023-12-11 一>
+
+整一个自动化的测试框架？
+
+尝试将 npc 向 nemu 的方向上调整。
+
+- [X] 电工电子作业
+
+- 先实现，再完美。
+  让 npc 把 dummy 跑通先
+
+- [X] chisel bootcamp
+  - [X] 0, 1, 2.1
+    chapter 0 是 关于 chisel 的简介
+    chapter 1 是 scala 语法的简介
+    chapter 2.1 简要的介绍了如何使用 chisel 绘制电路、如何对电路进行测试
+    - printf(s"") 生成电路时打印
+    - printf(p"") 仿真/测试时打印
+
+- 第二个任务：实现一键编译运行 npc.
+  - [ ] 需要参考 =./scripts/platform/nemu.mk=, 修改 =./scripts/platform/npc.mk=
+  - [ ] 需要从命令行获取运行参数，读取二进制文件所在位置，可以参考 nemu 的实现。
+
+
+* <2023-12-12 二>
+
+- chisel bootcamp
+  - [X] 2.2 comb_logic
+    - 介绍了chisel 的一些基本运算符 + - * / Mux Cat 等，并且提出需要注意 chisel
+    的数据类型与 scala 的数据类型有别。
+    - 介绍了如何使用 chisel 写一些基本的组合逻辑，比如 fifo 队列、加法器等
+    - 编写简单的 generator
+  - [X] 2.3 control flow
+    - 介绍了chisel下的控制语句 when {}.elsewhen{}.otherwise
+    - 硬件的等于是 ===
+    - 介绍了 wire 的使用
+
+* <2023-12-13 三>
+
+- [X] 2.4 sequential_logic
+  介绍如何在 Logisim 下设计时序逻辑电路
+  介绍了 =Reg=、=RegInit=、=RegNext= 的使用
+  1. =Reg=
+     相当于在 Verilog 里声明变量类型为 reg。
+     对 reg 变量的赋值(:=)，转换到 verilog 代码的时候，会被包裹在 always @(*) 内
+  2. =RegInit=
+     可以设定初始值。(注意如果寄存器两端的输入输出的宽度需要保持一致，不然设置的初始值是没有效果的)
+  3. =RegNext=
+     相当于对 =Reg= 又做了一层包装。将对寄存器的描述压缩成一行
+     #+begin_example
+       io.out := RegNext(io.in + 1.U) // out <= in
+     #+end_example
+
+- [ ] 2.5 pull-it-together
+  - 使用库函数一定要看文档.jpg, 使用 =RegNext= 的错误示例 [[W1]]
+- [-] 使用 chisel 重写 数字电路实验 [[N1]]
+  - [X] 配置chisel 环境
+  - [ ] 尝试一键编译, 启动 nvboard
+      	Makefile 大致不需要修改，我们只需要增加从 chisel -> verilog 这一构建流程即可。
+    - 现在的问题是，我看不太懂这个 template, 不太清楚要干啥。
+    - 还是做一下 chisel bootcamp 吧
+
+<2023-12-14 四>
+
+- [ ] 2.5 pull-it-together
+  真看不懂 AXI4
+- [ ] 2.6 chisel test
+
+<2023-12-15 五>
+
+- [X] 尝试实现一键仿真
+  - [X] 理解 mill 的构建流程
+    - 目录结构是怎样的？
+      src, tests, build
+    - 如何指定生成 verilog top module 的 名称为 top
+  - [X] 接入 Makefile
+  - [X] 修改 chisel 代码，符合 nvboard 要求。
+- [ ] 优化 chisel 的代码
+  在优化的过程中，越来越觉得我需要软件工程的知识来指导我构建一个大型项目。
+  一个项目有其依赖的编程语言，那么在学一门新的语言/框架的过程中，我们的探索路线到底
+  是怎么样的呢？
+  1. 首先是配置编程环境 (编译器，包管理器，以及其他辅助工具(lsp, format, repl))
+  2. 学习编程语言的基本语法
+  3. 学习 OOP or FP 来应对更加复杂的现实情景
+  4. 学习 如何导入外部库，编程语言如何与库进行交互 (api 文档)
+
+
+
+<2023-12-17 日>
+
+- 数电实验 2
+  1. 在 verilog 中定义为 input 与 output 的引脚，他们之间的性质到底有什么差别？
+  2. 定义为 wire 的变量和 input 和 output 又有什么差别？
+  3. chisel 的 := 赋值方向到底有什么讲究?
+  4. chisel 的 Flipped IO 到底是干啥的？
+  5. chisel 的 相关函数的实现能不能看懂？
+  6. 为什么报错原因看不懂？
+
+
+<2023-12-18 一> <<Latest>>
+
+1. 如何跳过 windows 联网验证
+   验证后会怎样？
+   - 不可以七天无理由退货
+2. 如何安装 Linux
+   需要有一个 8G 空间的 U 盘
+
+* 补充
+
+- W for wrong
+- N for note
+
+**错误实例** <<W1>>
+
+#+begin_src verilog
+    always @(posedge clock) begin
+       if (reset) begin
+	  reg1 <= 8'h0;
+       end else begin
+	  reg1 <= REG;
+       end
+
+       if (reset) begin
+	  reg2 <= 8'h0;
+       end else begin
+	  reg2 <= REG_1;
+       end
+
+       if (reset) begin
+	  reg3 <= 8'h0;
+       end else begin
+	  reg3 <= REG_2;
+       end
+
+       REG <= io_in;
+       REG_1 <= reg1;
+       REG_2 <= reg2;
+    end
+  #+end_src
+#+begin_src
+    val reg1 = RegInit(0.U(8.W))
+    val reg2 = RegInit(0.U(8.W))
+    val reg3 = RegInit(0.U(8.W))
+    reg1 := RegNext(io.in)
+    reg2 := RegNext(reg1)
+    reg3 := RegNext(reg2)
+  #+end_src
+
+#+attr_org: :height 50% :width 50%
+[[./images/2023-12-14_09-21-50_IMG_2048(20231214-091438).PNG]]
+
+**chisel 本地环境配置** <<N1>>
+  - 安装 scala 编译器和运行时环境。根据 chatgpt 的说法，我之前安装的 jupyter scala
+    内核只能用于交互式运行，不能对外部文件进行编译。
+  - scala 的 lsp 是 metal。
+    - nvim 只能使用 nvim-lsp 接入 metal 不能使用 coc，重构配置文件需要花上不少时间，
+      暂时搁置一下吧。
+    - vscode 可以直接使用 metal 插件接入
+  - scala 的构建工具有 mill / sbt
+    - mill 比较年轻，支持增量更新、速度快
+    - sbt 是老牌的 scala 构建工具，生态比较好，但是构建速度比较满
+  - 构建工具会读取项目目录下的 build.xx 配置文件，根据配置文件的内容下载对应的 scala 版本和 相应的依赖
+    - 你可以手动下载 mill (mill 其实也会下载 cs)
+    - 也可以使用 scala 官方提供的下载器 =Coursier(cs)= 来下载全套的工具链
+      (cs 下载的库文件储存在 =~/.cache/Coursier= 中, 二进制文件在 =~/.local/share/coursier/bin=)
+      - 下载了 scala REPL 工具，简易测试可以使用
+      - 下载了 demo project, 涉及到面向对象设计测试可以使用
+      - 还有 jupyter notebook, 可以测试电路生成和可视化
+
+
+**折腾 obsidian** <<sp1>>
+
+1. style-settings 可以微调 obsidian 的 css 样式
+2. Mininal theme Settings 预置了一些 css 样式供选择
+3. theme Minial
+
+obsidian 可以用作平时记录 bug 的草稿本
+~~每天晚上将 obsidian 的内容迁移到 TODO.org~~
+
+[[latest]]
+
+<2024-01-16 二>
+
+- 仔细看第二、三、四章的一道习题
+- 看 Ankironid
+
+
+
+abcd

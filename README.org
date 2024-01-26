@@ -1,0 +1,355 @@
+#+TITLE: emacs org-mode 的使用
+#+STARTUP: latexpreview
+#+LATEX_COMPILER: xelatex
+#+LATEX_HEADER: \usepackage{ctex}
+
+; 作为 readme
+
+* 标题
+
+文章中的标题可以通过 =#+TITLE= 来设置；正文中的标题可以通过 =*= 来设置，
+一个 * 代表一级。
+
+** 代码实例
+
+#+begin_src org
+  ,* 这是一个一级标题
+  ,** 这是一个二级标题
+  ,*** 这是一个三级标题
+#+end_src
+
+** 大纲相关的快捷键
+
+*** 折叠
+
+| 快捷键  | 说明                         |
+|-------+-----------------------------|
+| S-Tab | 循环 **整个文档的** 的大纲状态   |
+|-------+-----------------------------|
+| TAB   | 循环切换 **光标所在** 大纲的状态 |
+|-------+-----------------------------|
+
+
+*** 大纲间移动
+
+| 快捷键      | 说明                     |
+|-----------+-------------------------|
+| C-c C-n/p | 下/上一级标题              |
+| C-c C-f/b | 下/上一级标题 (仅限同级标题) |
+| C-c C-u   | 跳转到上一级标题           |
+
+*** 基于大纲的编辑 
+
+| 快捷键            | 说明                         |
+|-----------------+-----------------------------|
+| M-Return        | 插入一个同级标题               |
+| M-S-Return      | 插入一个同级TODO标题           |
+| M-Left/Right    | 将当前标题升级/降级             |
+| M-S-Left/Right  | 将当前标题(和子标题一起)升级/降级 |
+| M-S-UP/DOWN     | 将标题上/下移动                |
+| C-c C-t / S-L/R | todo done 切换               |
+| S-U/D           | 任务优先级 切换                |
+| C-c /           | 只保留大纲                    |
+
+*** 关于大纲显示
+
++ 当前文档显示缩进 =M-x: org-indent-mode=
++ 默认显示缩进 =#+STARTUP: indent=
+  
+** 轻量级标记语言
+
+*** 段落
+
+org Mode 中，需要回车两行开始新的段落。
+这是一段文字
+这还是第一个段文字
+
+
+这是第二段文字。
+
+*** 字体
+
++ bold **bold**
++ italic /italic/
++ underline _underline_
++ H_2 O;  e=mc^2
++ =git=
+  
+*** 列表
+
+**** ordered list
+
+1) first item
+   1) sub task 1
+   2) sub task 2
+2) second item
+
+
+
+**** unordered list
+
+可使用 =-, +, *= 开头
+
++ List
+  - sublist
+    * subsub list
+
+
+**** 添加列表完成进度
+
+
+* Organize Party [100%]
+** Call people [2/2]
+*** DONE Peter 
+*** DONE Sarah
+** DONE Buy products
+
+**** 添加时间戳
+
+- =C-c C-s/d= schedule/deadline
+- =C-c >= 日历
+- =C-c .= 插入当前日期 <2023-11-10 五>
+
+  
+**** 任务一
+DEADLINE: <2023-11-20 一> SCHEDULED: <2023-11-08 三>
+
+
+**** 有关列表的快捷键
+    
+| 快捷键           | 说明                    |
+| M-Return       | 插入一个同级项            |
+| M-S-Return     | 插入一个带有复选框的项     |
+| M-Left/Right   | 升级/降级                |
+| M-S-Left/Right | 将当前项(和项一起)升级/降级 |
+| M-S-UP/DOWN    | 上/下移动                |
+| C-c C-c        | 改变复选框状态            |
+| C-c -          | 循环切换列表标记               |
+
+
+** 表格
+
+*** 表格语法
+
+#+begin_src org
+    | Name     | Height | Weight | Age |
+    |----------+--------+--------+-----|
+    | Abcdefgh |    178 |    123 |  18 |
+#+end_src
+
+*** 表格快捷键
+
+#+CAPTION: 表格标题
+| 快捷键         | 说明         |
+|--------------+-------------|
+| C-c 竖线      | 创建表格      |
+|--------------+-------------|
+| C-c C-c      | 调整表格      |
+|--------------+-------------|
+| Tab/S-Tab    | 移动         |
+|--------------+-------------|
+| M-Left/Right | 移动列        |
+|--------------+-------------|
+| M-Up/Down    | 移动行        |
+|--------------+-------------|
+| M-S-L/R      | 删除/插入列   |
+|--------------+-------------|
+| M-S-U/D      | 删除/插入行   |
+|--------------+-------------|
+| C-c -        | 添加水平分割线 |
+|--------------+-------------|
+| C-c ^        | 排序          |
+|--------------+--------------|
+
+#+CAPTION: 单元格合并
+
+| 一级部门 | 二级部门 | 人数 |
+|----------+----------+------|
+| A        | A.1      | 5    |
+|          | A.2      | 6    |
+|----------+----------+------|
+| B        | B.1      | 7    |
+|          | B.2      | 3    |
+
+*** 分隔线
+
+___
+
+---
+
+*** 链接
+
+**** 链接语法
+
+#+begin_src org
+  [[Link][Description]]
+#+end_src
+
++ =C-c C-i= 插入/修改 链接
++ =C-c C-o= 点击链接
+
+[[~/Documents/ouline.pdf][The Missing Semester of your CS education NCU local version]]
+
+[[~/Documents/go-转学指南1.2.docx][docx 文件]]
+
+[[~/Videos/cut.mp4][视频]]
+
+*** 标记
+
+在标题后 =:tag1:tag2:tag3...=
+
+
+*** 代码块
+
++ =C-c C-,= 生成模板
++ =C-c '=  在小窗编辑代码块
+
+#+BEGIN_SRC verilog
+  module tb;
+      reg clk;
+      initial begin
+          clk = 1'b0;
+      end
+      always #5 clk = ~clk;
+  endmodule
+#+END_SRC
+
+
+#+begin_src C
+  #include <stdio.h>
+  int main ()
+    {printf("hello emacs\n"); return 0;}
+#+end_src
+
+#+RESULTS:
+: hello emacs
+
+<<p1>>
+
+#+begin_src python
+  a = "hello world"
+  retu>rn a
+#+end_src
+
+#+RESULTS:
+: hello world
+
+#+begin_src shell
+  pwd
+#+end_src
+
+#+RESULTS:
+: /home/trace
+
+#+NAME: citas-data
+| Sede      | Max cites | H-index |
+|-----------+-----------+---------|
+| Chile     |    257.72 |   21.39 |
+| Leeds     |    165.77 |   19.68 |
+| Sao Paolo |     71.00 |   11.50 |
+| Stockholm |    134.19 |   14.33 |
+| Morelia   |    257.56 |   17.67 |
+
+#+begin_src python :results output :var data=citas-data
+  cities = [d[0] for d in data];
+  for _ in cities:
+      print(_)
+#+end_src
+
+#+RESULTS:
+: Chile
+: Leeds
+: Sao Paolo
+: Stockholm
+: Morelia
+
+ #+begin_src python :results file
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('Agg')
+fig=plt.figure(figsize=(3,2))
+plt.plot([1,3,2])
+fig.tight_layout()
+plt.savefig('myfig.png')
+return './myfig.png' # return this to org-mode
+ #+end_src
+
+ #+RESULTS:
+ [[file:./myfig.png]]
+
+#+INCLUDE: "~/trace/learning/cpp/container.cpp" :lines "1-20" src cpp
+ 
+*** 脚注
+
+Latex is the best engine[fn:1], It is a great tool.
+
+*** anchor
+
+[[p1][go to p1]]
+
+=C-c C-o= open link
+
+=C-c %/&= 记忆/回溯位置
+
+*** todo
+
+- [X] execute code in org, using babel?
+- [X] export and preview org
+- [X] Latex support
+
+
+*** 导出
+
+- =C-c C-e= 导出,可以看 menu bar 里的快捷键
+- =M-x:org-md-export-as-markdown= 导出 markdown file
+
+*** math
+
++ =C-c C-x C-l= 预览latex
++ =C-c C-x C-v= 预览图片
+
+It is $\displaystyle{\int_0^1 \ln \mathrm{d}x}$ 。
+
+\begin{equation}
+x = \sqrt{2}
+\end{equation}
+
+** 其他杂项
+:PROPERTIES:
+:NOTER_DOCUMENT: org_mode.org
+:END:
+
+- **如何开启历史打开文件**
+  #+begin_src elisp
+    ; recent files
+    (recentf-mode 1)
+    (setq recentf-max-menu-items 10)
+    (setq recentf-max-saved-items 25)
+    (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+  #+end_src
+
+- **如何记录文件上次打开位置** =(save-place-mode 1)=
+- 如何插入tab？ =C-q + Tab=
+- 如何预览？grip-mode 插件
+- 如何显示图片链接？
+  - org-download 插件 org-download-yank/image/clipboard
+    - yank 读取剪辑版的链接，image 会提示你输入图片的链接, clipboard 读取剪辑版图片
+    - 操作流 下载 -> picgo 上传 -> 复制链接 -> org-download-image -> 设置大小 
+  - 或者启用 uimage-mode
+  - 测试一下
+    [[https://image-trace.oss-cn-shanghai.aliyuncs.com/img/20231110114243.png]]
+  - 如何控制图片显示大小
+    - 首先在配置文件里添加 =(setq org-image-actual-width nil)= 关闭默认的全尺寸显示设置
+    - 之后在想要调整的图片链接上方添加 =#+attr_org: :width 50% :height 50%=
+- 如何使用 snippet
+	- 安装 yasnippet
+	- 输入 =yas-minor-mode= 开启snippet
+	- 使用 =yas-load-directory= 加载 snippet
+	- 使用 =yas-new-snippet= 创建新snippet
+	
+- 如何使用 org-present (开箱即用)
+	- [[https://systemcrafters.net/emacs-tips/presentations-with-org-present]]
+
+* Footnotes
+
+[fn:1] [[http://www.latexlive.com]]
