@@ -497,11 +497,17 @@ obsidian 可以用作平时记录 bug 的草稿本
 
 [[latest]]
 
-<2024-01-16 二>
+#+begin_src C
+      #include <stdio.h>
+      int main()
+      {
+	printf("hello world!\n"); return 0;
+      }
+#+end_src
 
-- 仔细看第二、三、四章的一道习题
-- 看 Ankironid
+#+RESULTS:
+: hello world!
 
 
 
-abcd
+

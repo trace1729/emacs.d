@@ -1,5 +1,6 @@
 ;------------------ package ----------------------------------;
 (require 'package)
+
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
                          ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
@@ -44,7 +45,7 @@
 ;; 快速打开todo文件
 (defun open-org()
   (interactive)
-  (find-file "~/Documents/org/TODO.org"))
+  (find-file "~/.emacs.d/memorial/todo.org"))
 
 ;; 这一行代码，将函数 open-init-file 绑定到  键上
 (global-set-key (kbd "C-c C-t") 'open-org)
@@ -151,7 +152,7 @@
    '("8d3ef5ff6273f2a552152c7febc40eabca26bae05bd12bc85062e2dc224cde9a" "f4d1b183465f2d29b7a2e9dbe87ccc20598e79738e5d29fc52ec8fb8c576fcfd" "c8b3d9364302b16318e0f231981e94cbe4806cb5cde5732c3e5c3e05e1472434" "be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "e4a702e262c3e3501dfe25091621fe12cd63c7845221687e36a79e17cf3a67e0" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" "603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" default))
  '(org-agenda-files '("~/trace/learning/ysyx/ysyx-workbench/PA2.org"))
  '(package-selected-packages
-   '(yasnippet visual-fill-column org-present fanyi org-noter pdf-tools doom-themes embark-consult consult embark marginalia gnu-elpa-keyring-update vertico uimage org-download grip-mode keycast htmlize rainbow-mode racket-mode org markdown-mode evil company)))
+   '(orderless yasnippet visual-fill-column org-present fanyi org-noter pdf-tools doom-themes embark-consult consult embark marginalia gnu-elpa-keyring-update vertico uimage org-download grip-mode keycast htmlize rainbow-mode racket-mode org markdown-mode evil company)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -229,8 +230,9 @@
 (eval-after-load 'embark
   '(define-key embark-file-map (kbd "E") #'consult-directory-externally))
 
-
+(require 'marginalia)
 (vertico-mode t)
+(require 'orderless)
 (setq completion-styles '(orderless))
 ;;modeline上显示我的所有的按键和执行的命令
 ; keycast
@@ -247,8 +249,8 @@
 ; (global-set-key (kbd "C-s") 'consult-line)
 ; 为了不在 pdf-mode 里触发 consult-line
 ; 原来是因为 打开pdf 文件不会自动打开 pdf-mode ...
-(add-hook 'prog-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
-(add-hook 'text-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
+;(add-hook 'prog-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
+;(add-hook 'text-mode-hook (lambda() (local-set-key (kbd "C-s") 'consult-line)))
 ;(add-hook 'pdf-sync-minor-mode (lambda() (local-set-key [double-mouse-1] 'mouse-set-region)))
 
 ;;consult-imenu
@@ -262,6 +264,8 @@
 (setq org-noter-max-short-selected-text-length 20) ;; 默认为 80
 (setq org-noter-default-heading-title "第 $p$ 页的笔记") ;; 默认短标题格式
 (global-set-key (kbd "C-c n n") 'org-noter) ;; 与 org-roam 配合
+
+; font configuration
 
 
 ; =========================== pdf-tools ==================================;
@@ -384,3 +388,8 @@
 ;(add-hook 'pdf-view-mode (lambda() (display-line-numbers-mode nil)))
 (add-hook 'emacs-startup-hook (lambda () (yas-load-directory "~/.emacs.d/snippets")))
 (yas-global-mode 1)
+
+
+(set-fontset-font t 'han (font-spec :family "LXGW WenKai Screen"))
+
+
