@@ -45,7 +45,7 @@
 ;; 快速打开todo文件
 (defun open-org()
   (interactive)
-  (find-file "~/.emacs.d/memorial/todo.org"))
+  (find-file "~/.emacs.d/memorial/ysyx_dec_todo.org"))
 
 ;; 这一行代码，将函数 open-init-file 绑定到  键上
 (global-set-key (kbd "C-c C-t") 'open-org)
@@ -149,7 +149,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("8d3ef5ff6273f2a552152c7febc40eabca26bae05bd12bc85062e2dc224cde9a" "f4d1b183465f2d29b7a2e9dbe87ccc20598e79738e5d29fc52ec8fb8c576fcfd" "c8b3d9364302b16318e0f231981e94cbe4806cb5cde5732c3e5c3e05e1472434" "be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "e4a702e262c3e3501dfe25091621fe12cd63c7845221687e36a79e17cf3a67e0" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" "603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" default))
+   '("8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "37b6695bae243145fa2dfb41440c204cd22833c25cd1993b0f258905b9e65577" "8d3ef5ff6273f2a552152c7febc40eabca26bae05bd12bc85062e2dc224cde9a" "f4d1b183465f2d29b7a2e9dbe87ccc20598e79738e5d29fc52ec8fb8c576fcfd" "c8b3d9364302b16318e0f231981e94cbe4806cb5cde5732c3e5c3e05e1472434" "be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "e4a702e262c3e3501dfe25091621fe12cd63c7845221687e36a79e17cf3a67e0" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" "603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" default))
  '(org-agenda-files '("~/trace/learning/ysyx/ysyx-workbench/PA2.org"))
  '(package-selected-packages
    '(orderless yasnippet visual-fill-column org-present fanyi org-noter pdf-tools doom-themes embark-consult consult embark marginalia gnu-elpa-keyring-update vertico uimage org-download grip-mode keycast htmlize rainbow-mode racket-mode org markdown-mode evil company)))
