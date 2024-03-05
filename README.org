@@ -350,6 +350,7 @@ x = \sqrt{2}
 - 如何使用 org-present (开箱即用)
 	- [[https://systemcrafters.net/emacs-tips/presentations-with-org-present]]
 
+** 
 * Footnotes
 
 [fn:1] [[http://www.latexlive.com]]

@@ -120,6 +120,7 @@
 ; 选中编辑删除
 (delete-selection-mode t)
 ; 改变光标
+(setq toggle-truncate-lines nil)
 
 (setq-default cursor-type 'bar)
 ; 不要移动备份
