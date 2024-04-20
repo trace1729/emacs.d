@@ -27,7 +27,7 @@ m 的意思是 machine mode
 #+attr_org: :height 50% :width 50%
 [[file:images/2024-02-29_10-54-43_screenshot.png]]
 
-  
+
 - [X] 在 nemu 中实现 ecall, mret 指令
   ioe_init -> cte_init (set mtvec to __am_asm_trap, and register user defined function)
   yield -> ecall (提升当前特权等级) -> (硬件/nemu) 应该保存pc，并设置pc为 mtvec 所指向的 异常处理函数 (trap.S)
@@ -42,8 +42,8 @@ m 的意思是 machine mode
 	 #+end_example
 	总结函数调用链如下：
 	cte_init (user: set mtvec, user_handler) -> yield -> ecall (nemu) -> 调用 isa_raise_intr(save pc to mepc, set mcause) -> __am_asm_trap 将寄存器的值保存到栈中，组成 context 参数 -> __am_irq_handler (根据 mcause 设置 event, 在这里对 epc + 4) -> simple_trap -> __am_asm_trap mret (恢复现场)
-	
- 
+
+
 
 PA3.1 暂时结束，目前的问题是，difftest 运行不正常，猜测是向 spike 传入 csr 时出现问题。
 （尝试使用 state->mcause->write(), state->mcause->read() 来读写spike 模拟器的 csr 值，但是
@@ -108,14 +108,14 @@ PA4.1 开始
 
 yield os 程序调度流程图
 
-#+attr_org: :height 50% :width 50%
+#+attr_org: :height 50% :width 30%
 [[file:images/2024-03-01_15-32-07_screenshot.png]]
 
 * <2024-03-04 一>
 
 **mcause values after trap**
 
-#+attr_org: :height 50% :width 50%
+#+attr_org: :height 50% :width 20%
 [[file:images/2024-03-04_16-42-12_screenshot.png]]
 
 - [X] 修复接入中断控制后的 difftest
@@ -125,17 +125,746 @@ yield os 程序调度流程图
 ** TODO 自己实现 rtthread 下的 lib.c 文件
 
 
-* <2024-03-05 二>
+* <2024-03-05 二> <2024-03-06 三>
 
-** TODO 为 nemu 接入 rt-thread
+** DONE 为 nemu 接入 rt-thread
 
 > 因此, 一种直接的方式就是借助全局变量来传递信息.
-传递什么样的信息呢？应该是 rt_hw_context_switch 函数接受的 from 和 to 参数
-我不太清楚这个函数是什么时候被调用的
+Q: 传递什么样的信息呢？
+A: 设置标志位，区分是 switch，还是 switch_to, 保存 from 和 to 变量
 
+> 如何避免使用全局变量进行信息的传递呢？可以使用 pcb 的一个成员变量 user_data, 将传递的信息
+保存到 上下文 to 的栈上。
+Q: 怎么通过上下文获取这个栈啊？每一个isa的context都不一样。
+A:
+
+
+* <2024-03-07 四>
+
+** DOING 理解总线
+
+- [ ] 参考 IFU 的状态设计，画出 IDU 的状态转化图，并写出 chisel 代码
+  我想知道，对于划分到中间的电路部件，是不是既是 IFU，又是 IDU，那他们的状态转移关系又是怎么样的？
+
+摸鱼了..
+
+* <2024-03-08 五>
+
+ 多周期和单周期他们的区别在哪里
+ 如果把 cpu 的执行看成 5 个不同的模块，模块再抽象成函数。
+
+ 对于单周期来说，ifu 直接将指令输入给 idu，数据变化立马生效。
+
+ 对与多周期来说，ifu 需要先和 idu 握手，两者相互确定了之后，ifu 再将新的
+ 数据传递给 idu，之后的模块也是类似的。 所以我需要给每一个模块增加一个握手信号，
+ 也就是 valid 和 ready 信号。 valid 信号是当前模块传递给下一个模块的，主要作用是告诉下一个模块，我这边数据有效。而 ready 信号是当前模块告诉 上一个模块，我准备好接受数据了。
+ 这里我觉的不好理解是因为 valid 和 ready 信号有点感觉是互斥，死锁的感觉。
+
+ 为了方便理解，我们将所有情况进行分类
+
+ | 设备x valid \ 设备 x+1 ready | 0                                 |                               1 |
+ |                          0 | 00 (当前数据无效，之后的设备也没准备好) | 01 (当前数据无效, 之后的设备准备好了) |
+ |                          1 | 10 (当前数据有效，之后的设备没准备好, 也就是说上一个设备把数据传递下来了，但是下一个设备不更新) |                              11 (当前数据有效，之后的设备也准备好了) |
+
+
+无从下手 -> 看实例代码 -> 著名的开源项目
+
+1. nutshell
+2. riscv-mini
+   项目结构：
+
+3. sodor
+4. dino
+
+ready 为 1，ifu 才将数据发送给 idu (这个发送对应到 rtl 是什么？)
+valid 为 1，idu 才将 ifu 发送的数据覆盖自己的旧数据
+
+* <2024-03-14 四>
+
+咕咕了一周
+
+每天得有产出，每日计划要有，不然这一天下来干了什么都不清楚。
+
+- 首先，把之前的单周期的架构图画出来
+  - makefile 构建流程图
+  - rtl 代码示意图
+  - 尝试为 npc 加上csr寄存器和相关指令，先熟悉整体架构，再尝试重构
+    如果还是没有思路，可以尝试把 dino cpu 给做完了，参考一下这个教学型
+    cpu 的设计，再尝试重构自己的 cpu 部分。
+
+参考 nemu 的设计
+
+** DOING 为 npc 加上 csr 相关指令
+- [X] 修改 cpu 结构体，添加 mepc, mstatus, mcause 寄存器
+- [X] 添加 csrr, csrw, 增加 对特殊寄存器的读写操作
+
+  csrr rd csr 是伪指令，他对应 csrrs rd csr rs1 (x0), means `t = CSRs[csr]; CSRs[csr] = t | x[rs1] (0); x[rd] = t`
+  csrw csr rs1 也是伪指令，他对应 csrrw rd (x0) csr rs1， means `t = CSRs[csr]; CSRs[csr] = x[rs1]; x[rd] = t`
+
+  综上，可以实现一个很 dummy 的 csr 版本。
+
+* <2024-03-15 五>
+
+面试
+
+* <2024-03-16 六>
+
+如果我将 pc 设置为 base - xlen.U, 那么在第一个上升沿前，pc的值为 base, 获取第一条指令，寄存器的值被设置为默认值
+
+如何在一周期内，即将 csr 的写入前的值保存到 x[rd] 中，又使用 data 覆盖掉 csr 寄存器的值
+ 对于 csrrw 寄存器来说，有两个写回阶段
+ CSRs[csr] = t
+ x[rd] = t
+ (t = CSRs[csr])
+
+csrr rd csr 是伪指令，他对应 csrrs rd csr rs1 (x0), means `t = CSRs[csr]; CSRs[csr] = t | x[rs1] (0); x[rd] = t`
+ - 由于要写入csr的数据和写入寄存器文件的数据是一样的，所以暂时不需要考虑数据一致性的问题
+csrw csr rs1 也是伪指令，他对应 csrrw rd (x0) csr rs1， means `t = CSRs[csr]; CSRs[csr] = x[rs1]; x[rd] = t`
+ - 由于写入目标寄存器是 x0, 可以忽视，所以也不需要考虑数据一致性的问题。
+
+就给 csr 一个 data 输入不太够
+先写出指令的 bitpad 模式
+分析 csr 接口是否需要改进
+完善控制逻辑
+完善数据通路
+
+排除语法错误
+
+* <2024-03-17 日>
+
+咕咕
+
+* <2024-03-18 一>
+
+咕咕
+
+* <2024-03-19 二>
+
+** TODO  重构 npc
+** DONE 为 npc 接入 rt-thread
+- npc 读写内存 使用的是自定义的 dpi_pmem_read -> host_read, 而基础设施框架使用的是 vaddr_ifetch -> paddr_read -> pmem_read -> host_read
+
+这个 __riscv_e 是啥东东?
+
+在执行 ecall 指令后
+Q: difftest 检测到 pc 的异常后，输出错误信息，停机。
+   不过在输出错误信息的时候，出现了死循环，暂不清楚原因。
+A: difftest 对比失败 check_regs -> **iringbuffer_display** -> decode_last_inst
+   -> 根据pc获取地址 -> (因为pc值无效) -> 触发 panic -> assert_fail -> **iringbuffer_display** -> ...
+
+如何解决：
+1. 干瞪眼
+2. 使用 dpi-c 机制，和 nemu 对比 csr 寄存器的值，定位到第一条实现错误指令的位置, 缩短 fault 和 failure 的距离。
+3. [X] 写一个仅仅包含异常处理汇编指令的程序，看波形图查错。
+   测试发现 csrr 指令完全没有效果
+   - 是因为 mtvec 对应的编号没写对，所以 mtvec 的地址没有写入成功
+   - difftest 报错
+     Q: 因为作为ref的nemu的ref.c没有csr的处理代码
+        但是加上这个处理代码之后，怎么还报 out of bound 错误了，逆天
+     A:
+      1.我没有使用 dpi-c 机制将 csr 的值传入 基础设施
+      2.npc是接入了外设的，difftest 需要跳过某些访存指令，而跳过指令
+      就需要将 npc 寄存器 拷贝给 nemu 基础器 (导致nemu csr 寄存器的值都是0)
+      3.那么就会导致 nemu 的mepc 变为 0，这样就会导致 Out of Bound 错误。
+     综上所述，加上dpic机制把csr寄存器的值存入基础设施就可以了。
+
+     Q: 这个问题解决之后，还有一个问题就是，为什么 nemu 的 mcause mepc 寄存器的值，一直是0啊？
+     A:  npc yield 对应的内联汇编是 `li a5, -1; ecall`
+       而 nemu 则是 `li a7, -1; ecall`, 在 nemu 中，实现 ecall 指令时，
+       我固定是取 a7 的值，这导致参数错误。
+
+** PA3.2
+
+开了个小
+
+** DOING 接入总线
+
+* <2024-03-20 三>
+
+** PA3.2
+
+需要实现一个 loader。nano-lite 目前功能比较基础，只需要关注 main 函数里，init_ramdisk, 和 init_proc 即可
+
+** 总线
+
+In my naive thought, adding bus to single-cycle processor design
+simply means that abstracting the input/output ports and wraps them
+with DecoupledIO, then we connect five stage using =<>= and set the ready/valid signal to constant 1.
+
+疑惑，我这个 io 需要声明 input output 吗，还是说我直接 flipped
+
+IF 模块不仅需要传数据给 ID
+
+如何重构？
+1. 按执行阶段拆分，(IF, ID ...)
+2. 确定当前执行阶段的电路原件，比如 IF 有 pc 寄存器和 指令存储器
+3. 确定当前执行阶段的输入输出 (IFU 的输入输出)
+   - 明确电路原件的输入都连上啦
+   - 明确执行阶段的输出都被连上了
+
+IF: pc 寄存器 和 指令寄存器
+ID：regfile, csr, immgen, controlLogic
+
+<2024-03-21 四>
+
+| 阶段 \ 输出 | 1        | 2     | 3         | 4     | 5  |   |
+| IF        | pc       | inst  |           |       |    |   |
+| ID        | rs1      | rs2   | immediate | ctrl  | pc |   |
+| EX        | overflow | carry | zero      | *res* | pc | ctrl |
+| MEM       | rdata    |       |           |       |    |   |
+| WB        |          |       |           |       |    |   |
+
+
+| 阶段 | 输入           |
+| IF  | inst          |
+| ID  | pc, inst, *data* |
+| EX  | rs1, rs2, imm, ctrl, *pc* |
+| MEM |   |
+| WB  | alures, pc, rmemdata, csrvalue, ctrl |
+
+每一个阶段都需要控制逻辑，也可能有其他阶段的输出，这应该如何处理？
+- Native thought: 再加上一层与其他模块交付的 decopuled IO
+  有需求的话，暂时直接新建几个 input io 传递把，之后再考虑优化
+  整合，先把系统给跑起来。
+
+如果一个 bundle 既有输入又有输出，那给他在外层套上一个 Output, 输入和输出的端口
+会发送什么变化呢？
+- 没有变化
+
+I've already split the execution stage to five, what's next? use the valid signal wisely
+
+Based on the small demo, apply the central idea to five cycle cpu processor
+and generate the wave form
+
+* <2024-03-22 五>
+
+把波形跑出来，看符不符合预期
+将 wbu 连接到 ifu, 形成闭环
+
+** 总线 [50%]
+*** DONE 重构 npc
+- 将单周期拆解成5个模块
+- 模块与模块之间使用总线的握手协议进行通讯
+*** DOING 评估单周期 NPC 的主频和程序性能
+- 首先回退到之前单周期的版本
+- 跑 train, 记录周期数
+  #+begin_src
+    Scored time: 1723693640 ms
+    Total  time: 193804.750 ms
+    npc: HIT GOOD TRAP at pc = 0x80005608
+    host time spent = 193,817,363 us
+    total guest instructions = 196,017,664
+    simulation frequency = 1,011,352 inst/s
+  #+end_src
+
+  由于是单周期处理器，一周期执行一条指令。
+  总共的周期数就是 $\text{simulation_frequency} \cdot \text{host_time}$
+  也就是 =196,004,821=
+
+  #+begin_src python
+    return 1011352 * (193804.750 * 0.001)
+  #+end_src
+
+  #+RESULTS:
+  : 196004821.522
+- 跑 yosys-sta 综合出来的报告看不太懂，之后再说
+  - 修改 example 下的 stc 文件，再修改下 Makefile, 然后再 make sta, 就能得到综合结果
+    报告在 result/top-500MHz/top.rtp 下
+    单周期主频 500Mhz
+
+*** 将 IFU 访问存储器改造成 SRAM
+- 为什么使用 SRAM 模块，还要使用 DPI-C 机制，读取内存，这不是多次一举吗？
+  好像不是真的需要实现 SRAM, 本质上还是数组模拟，但是读取的数据需要延迟一周期才能拿到
+
+* <2024-03-23 六>
+
+*** DONE 9.30 预学习答辩
+*** DONE 4.00 发布预学习交流会通知
+*** DONE 6.30 发布预学习交流会通知
+- 记得提前看一下预学习交流会的问题
+*** DOING 为 npc 接入 总线
+- 目前的需要让重构后的 npc 跑通 microbench 测试
+  Q: 为什么多周期的 npc 没执行指令就触发了 stop 函数，将
+  NEMU 的 state 设置为了 stop?
+  A: 因为初始的 inst 是 0，属于类型 type_N
+  Q: 为什么我加了一条指令类型匹配，运行就报段错误。
+  (将判断程序终止运行的指令改为 type_EBREAK, 而不是 type_N)
+  A: 这不是段错误，是因为结束的时候 nemu 的状态不是 NEMU_STOP, npc 的返回值为-1，
+  所以 MakeFile 报错
+  Q: 运行到后面还是会报段错误
+  A: 当 lw 执行完成时，addr 变为 0，而此时的 mem 使能信号却还保持为 1，
+  这样会触发对地址0的读操作，导致 segment fault
+
+  应该加强对读地址的参数检查， defensive programming
+
+    接入基础设置的疑问：
+     什么时候确定一条指令执行完成了。
+
+* <2024-03-24 日>
+
+** DOING 为npc接入总线 [75%]
+*** DONE 把 microbench 给跑起来
+
+- 目前的问题是，一拿到指令，处理器就立刻完成 解码，执行，写回等操作。
+  多周期了个寂寞。我们需要使用寄存器储存中间状态。
+
+  有哪些信号是在执行一条指令的多个周期内不变化的，有那些信号是只在一个周期内有效的？
+  - 和组合逻辑相关的信号是可以不管的
+  - 但是和时序逻辑相关的信号，只能在一个周期内有效，不然同一条指令在多个周期内会进行多次写入操作。
+    目前和时序逻辑有关的信号是 寄存器文件(gpr, csr)的写使能信号，内存的写使能信号。
+    - idu regfile writeEn 有必要把 regfile 单独抽离出去
+
+      idu -> ex -> mem
+    - 先看 mem 的使能信号
+*** DONE 在开启 difftest 的前提下, 把 microbench 跑起来
+- 首先要修改 verilator_exec_once, 一个周期的结束不再标志着一条指令的结束
+  - 也许可以利用 wb2ifu_out.valid 和 wb2ifu_out.ready 来进行
+  - 应该是成了 (X) 提前开🍾
+    - 寄存器没写入成功
+      寄存器状态在下一条指令到来是才写回, 那就依赖于 if2idu_out.valid
+
+*** DONE 接下来把异常处理也接入
+
+*** DOING 之后可以去看 axi 总线相关的了
+
+* <2024-03-25 一>
+
+** 总线 [25%]
+*** DOING 接入 AXI-lite 总线
+*** DOING PA3.2
+- 运行 nanos-lite 会报 address out of bound
+  - 一开始猜测是因为 异常处理切换有问题，后面启用 iringbuffer 输出异常前的
+    指令才发现是 printf 的问题，应该是printf的 buffer 数组太小，导致溢出，把栈的内容给覆盖了。
+    printf 检查没写到位，需要做到防御性编程
+#+attr_org: :height 50% :width 50%
+[[file:images/2024-03-25_10-48-02_screenshot.png]]
+- 开始写 loader
+  nanos-lite 应该是通过 native_uload 来加载用户程序，但是根据文档，native_uload
+  Q 这个函数的两个参数暂时都没啥用，那要如何才能获取到读取 elf 文件的地址？
+  A 疑似这个 ramdisk_start 标识着可执行文件的开头，那我要怎么读取里面的内容？
+  A 在这里我们不需要通过 fread 打开 elf 文件，因为我们已经把 elf 文件加载进内存里了。
+  Q elf 文件读取差不多会了，但是加载数据到内存是怎么搬到的，内存在哪里？
+  A 或许是直接把 ramdisk 当成内存了，也就是说，程序和内存是放在一起的吗？
+   都读出物理地址了， 当然可以直接将数据存到物理地址里去啊。
+  Q: 为什么打印出来的地址和我 readelf 得到的不一样
+  A: 因为printf 实现的有问题, 不是很理解为什么会这样
+
+技术总结：
+ 首先读出 hdr, 再根据 hdr 加载 program header。
+ program header entry 包含了header的偏移量，虚拟地址，大小。
+ 实现之后，可以和 readelf 的输出结果进行对比。
+
+
+*** DOING 改进一下 printf bug 实现太多了
+
+<2024-03-26 二>
+
+*** DONE PA3.2
+参考一下 xv6 exec 的实现，看看它是如何确定运行进程的第一条指令的。
+- 检查 elf 头
+- 为进程分配 页表
+- 根据 hdr 读取到 program header enrty, 根据 entry 再将程序段加载进虚拟内存中
+  - 在虚拟地址找到 va 对应的物理地址
+  - 把 ip 对应 offset 的内容，拷贝到在上一步中得到物理地址
+- 为程序分配用户栈
+- 切换当前进程的页表
+- 设置 p->trapframe->epc 为 elf->entry，破案了
+
+实现系统调用：
+对于用户程序： dummy: _syscall_ -> libos/src/syscall.c 下的 _syscall_  -> 加载入口参数，调用 ecall。
+对与操作系统来说：需要加载用户设置的系统调用号。执行完系统调用后，将返回值赋值给 a0
+
+这个 unhandled event ID 4 是怎么来的, 因为 nemu (硬件) 没有根据 a7 系统调用号参数值来设置 mcause,
+这样 am 就没有办法根据 mcause 来设置 event, 这样 event 就是 默认值 EVENT_ERROR (4)
+
+用户调用系统调用，和用户调用 yield, 背后的函数调用路径是一样的，可以参考之前画的函数调用关系图，区别只是
+a7 的值不同。
+
+完成 pa3.2 的 turing machine，之后添加系统调用只需要修改 syscall.c 和 irq.c 就可。
+
+我们在 nano-lites 执行的 应用程序是单独编译的。也就是说，应用程序是连接到的 navy-app 提供的运行时环境 (printf ...)
+而 nano-lites 是在编译在 am 上的，也就是说 是 am 提供的运行时环境。
+
+还剩下一个 堆区的实现没写。可以参考 xv6 sbrk 的实现。
+
+* <2024-03-27 三>
+
+** 毕业论文 [33%]
+
+*** DONE 翻译外文文献
+*** TODO 改写开题报告
+*** TODO 正式论文
+
+** 总线 [0%]
+
+*** DOING 阅读 AXI-4 相关材料
+**** 实例代码
+**** 参考视频
+*** DOING chisel bootcamp
+- 3_1: 介绍了 `implicit parameters`, 介绍隐式参数的传递。
+  （就是可传，可不传的参数）介绍了 Option 类的使用。介绍如何使用参数类创建一个一元状态机。
+- 3_2: collections: 介绍如何使用 chisel 的 Vec 类创建一个参数化的 FIR
+- 3_2: interlude: 介绍一些 chisel 的内置电路组件
+- 3_3: high_order fucntions: 介绍 map, reduce, fold, zipwithindex
+  实现一个多路总裁器
+- 3_5: 面向对象
+  - abstract class: 不能被实例化
+  - trait: 类似 java 的 interface, 不过他可以有构造参数。一个scala类可以有多个 trait, 但是只能继承一个类
+  - object: 单例类，类似 java 的静态类 (全局变量)
+  - companion object: 当同一个文件中有重名的类和对象时，这个对象被成为这个类的伴生对象，有点想 java 类里的静态成员
+    变量
+    - 保存些常量
+    - 在构造器前执行代码
+    - 多个构造函数
+    - 如果 class / companion object 前没有new，那么就会引用 companion object, 否则就会实例化那个类。
+      #+begin_example
+      **Chisel uses many companion objects, like Module.** When you write the following:
+      ```scala
+        val myModule = Module(new MyModule)
+      ```
+      you are calling the **Module companion object**, so Chisel can run background code before and after instantiating  ```MyModule```.
+      #+end_example
+    - case class, like data class in kotlin, have default getter and setters.
+- 3_6: type
+  - `asInstanceOf[Int]` 强制类型转换为 Int
+  - `match` operator (type match, useful for writing generic type function)
+  - `match` depend on the unapply function of a object.
+  - chisel 的 type 继承系统
+
+
+#+begin_src scala
+  class DspComplex[T <: Data:Ring](val real: T, val imag: T) extends Bundle { ... }
+  // means T is subclass of T and has attribute the same as Ring (trait)
+#+end_src
+  - chisel 函数接受的参数是多态的
+#+begin_src
+  def profile[T](block: => T): (Double, T) = {
+    val startTime = System.nanoTime
+    val result = block
+    val endTime = System.nanoTime
+    (endTime - startTime) * 1e-9, result
+}
+   // `=> T` means the lambda function takes no args and return type T.
+
+#+end_src
+
+* <2024-03-28 四>
+
+** PA3.2
+*** 堆区管理
+
+** 总线
+*** 看 axi-4 的实例代码
+- 看下能不能跑一个小demo
+  学习的过程大概是：
+   理论 -> demo -> 项目（实践）
+   理论: 文档 （导入电子书写笔记，重要的复制到ob），第三方介绍，视频资料 (写笔记)，课程ppt, 开源代码 (写注释)
+   找到了这些再如何去整理呢？
+    obsidian，做一个 ppt
+
+* <2024-03-29 五>
+
+捉虫，问题在于把父模块的输出，接入到子模块的输入。这两个都不是 driver, 所以 chisel
+会报连接类型错误。
+
+解决方案是在 Mem 下新建两个模块，一个 axi 控制器，一个 sram。
+axi 控制器的输入由 Mem 提供，axi 的输出接口遵循 axi 总线协议 (AxiMaster)
+sram 的输入遵循 axi 总线协议 (Axislaves)
+
+* <2024-03-30 六>
+
+- axi 总线读操作试点成功。
+
+* <2024-03-31 日>
+
+成功接入 axi lite 总线，不过还没有进行随机延时测试
+
+* <2024-04-01 一> <2024-04-02 二> <2024-04-03 三>
+
+** 完成总线这一章节 [100%]
+*** DONE 为总线添加随机延迟
+- 参考下之前的实现, sram 如何按照指定的延迟数做倒计时呢？
+  - 设计一个 倒计时 timer 就好了
+  - 目前的问题是，添加上随机延迟之后，在一个周期内会对 mem 进行多次写入
+    这样会导致输入输出异常。
+  这个先咕咕了 =在IFU和LSU中也添加LSFR, 通过它来决定AR/AW/W通道中valid信号的延迟, 以及R/B通道中ready信号的延迟=
+*** DONE 添加总线仲裁器
+- 如果只实例化一个 sram, 那么 lfu 和 lsu 如何通过 axi 总线接口访问
+  sram 呢？我们是不可能在 lfu 里实例化一个控制器，然后把 lfu 里面的控制器和
+  实例在外面的 sram 相连接的。那就只能把 axi-controller 信号给拉到顶层，
+  但是把 axi-controller 拉到顶层的话，它的激励信号谁来提供呢？我又不能给 input
+  端口赋值
+
+- 最后采取了下面这样一个 workAround, 在 IFU 和 LSU 中各实例化一个 axi 控制器，说是控制器，但他
+  起的作用就是把 axiIn 给连接到 sram 的 axiIn, 控制逻辑在放在了 ifu 内部而不是在 axiController 里，
+  这是因为我控制信号的生成需要依赖于 上一级 的一些控制信号，如果要将控制逻辑给集成到 axiController 中，
+  我还得把这些控制信号也给传进去， 比较麻烦。
+
+  #+begin_example
+  				 axiOut
+     +--------------------------+  	  +----------+	    +----------+
+     |    axiIn       axiOut    |  	  |          |	    |          |
+     |       +---------+        |  	  |          |	    |          |
+     +------->         >-------->---------> Arbiter  +------>	SRAM   |
+     |       |         |        |         |          |	    |          |
+     |       +---------+        |      +-->          |	    |          |
+     |  IFU                     |      |  |          |	    |          |
+     +--------------------------+      |  +----------+	    +----------+
+                                       / axiIn
+     +--------------------------+     |
+     |    axiIn       axiOut    |     |
+     |       +---------+        |     |
+     +------->         >--------------|
+     |       |         |        |
+     |       +---------+        |
+     |  MEM                     |
+     +--------------------------+
+
+  #+end_example
+
+#+BEGIN_SRC ditaa :file ascii.png :cmdline -r -s 0.8
+	
+  +-----+ inst  ---> +-----+      --->  +-----+       ---> +-----+
+  | IFU | valid ---> | IDU | valid ---> | EXU | valid ---> | WBU |
+  +-----+ <--- ready +-----+ <--- ready +-----+ <--- ready +-----+
+
+#+END_SRC
+
+#+RESULTS:
+[[file:ascii.png]]
+
+
+*** DONE 添加外设
+
+重构 axi-4 总线，有不少地方没有注意到
+比如，在完成握手之后，数据应被锁存到寄存器里，而不是通过导线相连。
+
+* <2024-04-03 三>
+
+
+4.4-4.6 咕咕
+
+* <2024-04-07 日>
+
+流水线处理
+1. (data hazard) read after write hazard
+   出现的情况：当一条指令还没有把值写入到寄存器时，紧接着执行的指令又使用到了寄存器的值
+   解决办法：检测 EX 阶段的 rs1/rs2 寄存器的值，是否和 MEM 和 WB 中的 rd 寄存器的值是后一致, 如果是一致的，那就将 MEM/WB 阶段的 rd 寄存器的值给前递到 alu
+   实现逻辑
+   #+begin_example
+   if (Rs1E == RdM & RegWrite) & (Rs1E != 0) then
+     ForwardAE = 10
+   else if (Rs1E == RdW & RegWrite) & (Rs1E != 0) then
+     ForwardAE = 01
+   else
+     ForwardAE = 00 (Do not forwarding)
+   #+end_example
+2. (data hazard) load instruction hazard
+   出现的情况：lw 指令造成的数据冒险，没法使用 forward 解决，因为在第四个阶段结束时，才可以拿到值，这个时候第二条指令已经过了 alu 阶段。
+   解决办法：通过控制逻辑的 WBsel==2 来识别 lw 指令，如果在 ex 阶段发现 rd 和 下一条指令的 src1/2 相同，那么就让接下来的一条指令空转 (stall Decode and Fetch, flush Execute)
+
+3. control hazard
+   由于跳转指令是否跳转是不可预测的，我们无法确定我们提前取出的指令是否有效。所以如何遇上了跳转指令，可以先假设它不跳转，往下执行。假设在第一条指令的 ex 阶段发现实际上是需要跳转的，那么就冲刷掉之后的两条指令 (Decode and Ex Stage)
+
+* <2024-04-08 一>
+
+画出多周期架构图，设计流水线架构图。搞清楚多周期和流水线的区别, 如何在实现了握手信号的总线情况下，实现流水线设计。
+
+经典五级流水线
+- 理想纯粹
+- 地址计算比较时间长
+
+实际上是不存在的，
+500mhz 的cpu访问100Mhz的 sram 读延迟需要30周期？why
+
+结构冒险：
+流水线的不同阶段需要同时访问同一个部件
+ - (ID 和 WB)如果在一个周期内同时对一个寄存器进行读写，结果会是怎样呢？
+ - (IF 和 MEM) 在同一个周期内对内存进行读写 (目前的对 内存和 对数据进行读写暂时不会引入冲突，所以暂时不需要考虑数据一致性的问题)
+   - 内存的双口模型 (两套独立的读写端口)
+   - icache 和 dcache
+
+如果实现了总线，把结构冒险的检测和处理归约到总线的状态机
+
+用总线就可以避免增加额外的控制逻辑
+
+数据冒险：
+ex阶段的src和wb/mem阶段的rd相同
+解决方案
+- 插入 nop 指令
+- 编译器优化
+
+在实际情况下，软件几乎无法预测访存延迟
+- 所以我们有硬件检测
+  分配一个 32 位的忙数组, 如果检测到数组为忙就等待，也就说
+  将 ready 位置 0
+  减少代码中的隐含依赖
+控制冒险
+- 由分支指令引起的控制冒险：加入分支预测器，或者静态分支预测
+- 由异常引起的控制冒险
+
+如何让流水线流起来 (如何减少阻塞)：
+- 通过 profiling 减少阻塞
+
+cache 访问存储会造成最大的性能损失，（然而我没实现cache）
+
+数据冒险：
+可以直接转发
+
+控制冒险：
+静态分支预测，或者根据跳转地址的方向来进行预测，或者加入饱和计数器
+
+为什么不采用课本上的全局控制器控制的流水线设计？
+
+因为课本考虑的是理想情况，有不少地方做了简化。
+
+比如课本假设 lw 指令在第4个时钟周期束时才能拿到数据，所以
+为了避免数据冒险，那我们必须要在lw指令后插入一条nop指令。
+
+但是实际上 lw 在 mem 阶段所需要的周期数是不可预知的。那么其实就不好
+预测插入bubble的数量。这个时候需要使用总线的思想来解决这个问题，将mem阶段 的ready 信号置0即可，进行阻塞。
+
+过早的优化是万恶之源
+
+1. 首先把 mem 和 wb 两个阶段并
+   - 为什么：因为拆分成两个阶段并没有明显好处，所以不拆分
+     （且在解决后续的数据冒险中，只需要在一个阶段进行前递就好了）
+
+2. 遇到 hazard 全部阻塞
+3. 如何接入 difftest?
+
+如何进行阻塞， 如何进行冲刷
+
+* <2024-04-09 二>
+
+为什么总是会对着电脑发呆呢..
+
+1. npc 在 lsu 阶段就可以确定，给 npc 的控制逻辑提前
+   - 为什么要提前，如果不提前会怎么样？
+   - 现在提前了会造成什么样的后果？
+     对我的多周期处理器来说，好像完全没有影响
+     因为 wb 阶段的 npc 是通过导线直接连接到了 if 的 pc 寄存器端口，并不受
+     valid 信号的影响，valid 只是影响 if 的 pc 寄存器什么时候更新数据
+
+2. 把 riscv-tests 接入, cpu-test 不太方便测试流水线的情况
+3. 如果我不考虑各种冒险，直接进行流水，那是不是把每一个阶段接受的数据，保存在
+   寄存器里，就可以了呢？
+
+   - 想知道如何争取设计 id2lsu 的 valid 信号
+
+多周期处理和流水线处理器的区别是什么？
+- 对于多周期处理器, 上游模块空闲时消息无效, 下游模块忙碌时不接收新消息; IFU收到WBU的完成信号后再取下一条指令。
+- 在流水线处理器中，if 可以不等待 wb 的完成信号，就进行取指。比如在ex阶段确定完
+  下一条pc时，就可以开始取指令。
+
+
+CPU 设计实战是如何介绍流水线的？
+
+ 首先，书上介绍了如何实现一个不考虑冒险的最简单的流水线处理器。
+ 1. 也就是先将流水线划分为5个阶段，然后在每个阶段之间用寄存器缓存需要传向下一级的信号
+ 2. 在进行流水线设计的时候，重构了访存用的 sram
+ 3. 并且提前了 pc 确定的时机将取指时间提前
+ 4. 书上还提到，以 nextPC 作为sram的输入, 因为 nextPC 的生成是组合逻辑，传给 pc 需要耽误一拍
+
+我们要如何进行设计：
+1. IF 阶段不需要修改，valid 信号暂时依赖与 WB 阶段传入的 valid
+2. ID 阶段需要修改之前使用的握手逻辑，需要修改为状态机模型，声明两个寄存器，将 IF
+   阶段传递过来的 inst 和 pc 保存在id内部定义的寄存器当中，寄存器的更新信号设计为
+   if2idu_valid, if2idu_ready
+
+
+在实现完了不考虑冲突的流水线处理器后，我们需要开始处理可能遇到的冒险
+直接阻塞
+1. RAW 数据冒险 设置 ready=0
+2. 控制冒险 设置 valid = 0
+加前递
+
+
+* <2024-04-10 三>
+
+- 毕业论文
+- 看分享会
+  - 自动切分波形
+  - 代码是串行的，而电路是并行的
+
+不可否认我的 axi 控制器是有问题的，设备没有将读取到的数据锁存在寄存器中。
+遇到苦难，直接绕过
+大部分情况下，都是凭借自己直观的感觉行事
+
+* <2024-04-11 四>
+
+重构，将所有控制信号缓存到寄存器中
+
+* <2024-04-12 五>
+
+接入流水线
+
+* <2024-04-13 六>
+
+接入流水线
+用 dummy 跑几个周期看看波形是否正常，data hazard 没有处理，control hazard 没处理
+
+* <2024-04-14 日>
+
+1. 画出各个模块的状态转换图
+2. 画出一条指令运行可能的时序图
+
+然后出一个视频好好讲解一下
+
+确定一条指令结束的时机，怎样对比 difftest
+
+现在的问题：
+没有加 npc 上加上控制冒险的处理模块，但是能正常跑通 microbench
+这非常奇怪
+- 在遇到控制冒险的时候，在开始取指前，就把 pc 更新成正确的 PC 了
+  出现这样的情况只是因为处于仿真环境，为了更加接近真实环境，我们刻意在 idu 中多耽误一周期，
+  让 pc 同步失败。
+
+如何进行分支预测？
+
+* <2024-04-15 一>
+
+不清楚如何在架构图上添加功能，这个示意图具体应该包含那些东西呢？
+
+目前处理控制冒险的方法：在 EX 阶段检测到需要跳转时，将 jump 和 npc 前递给 IF 阶段，
+等 IF 阶段对错误的 PC 取址结束后，再对 NPC 进行取指。这个时候冲刷掉 if2idu 寄存器
+和 id2exu 寄存器里的值。(也就是说， exu 还需要向 idu 传递一个 jump 信号)
+
+difftest 不能正常工作：
+  1. 访问设备需要跳过对比
+  2. nop 需要跳过对比
+
+     
 * 备忘录
 
-XLEN to refer to the **width** of an integer register 
+书包在会议室
+水杯不见了，记得找找 两个会议室，一楼大厅
+
+为什么 axi 总线做的这么慢，感觉是因为懒的画图，所以大部分时间都在空想，很难有实际进展。而又因为很难有进展，导致会出现精神内耗，进而导致发呆，更多的耽误了时间。
+
+Milky duo
+
+What should I do the first time?
+
+避免行为建模
+
+Q: 如何学习一个协议：
+- 文档
+- 时序图
+- 状态转换图
+- 电路图
+- 源代码，仿真
+
+Q: 如何避免处理器执行了无效指令?
+
+A: 处理器是个状态机!
+
+valid无效时, 只需要不修改处理器的状态即可
+状态 = 时序逻辑元件, 将其写使能无效即可
+
+组合逻辑处理器的某些状态会发生跳变，比如读写地址突然跳变成0
+
+XLEN to refer to the **width** of an integer register
 
 
 在 c 语言中，在 union 里定义的匿名结构体的成员可以被直接访问
@@ -144,28 +873,83 @@ Anonymous structures in C allow us to define structures without naming them, whi
 #+end_example
 
 #+begin_src cpp
-  #include <stdio.h>
-typedef struct {
-    struct {  // Anonymous struct
-        int x;
-        int y;
-    };
-    double radius;
-} Circle;
-int main() {
-    Circle c;
-    c.x = 10;  // Direct access to 'x' and 'y'
-    c.y = 20;
-    c.radius = 5.0;
-    printf("Circle center: (%d, %d), radius: %.1f\n", c.x, c.y, c.radius);
-    return 0;
-}
-#+end_src
-
-#+begin_src cpp :includes <stdio.h>
-  printf("%x\n", -0x7FFFFF90);
+    #include <stdio.h>
+  typedef struct {
+      struct {  // Anonymous struct
+	  int x;
+	  int y;
+      };
+      double radius;
+  } Circle;
+  int main() {
+      Circle c;
+      c.x = 10;  // Direct access to 'x' and 'y'
+      c.y = 20;
+      c.radius = 5.0;
+      printf("a=%d\n", 0x80000000 / 0xffffffff);
+      printf("Circle center: (%d, %d), radius: %.1f\n", c.x, c.y, c.radius);
+      return 0;
+  }
 #+end_src
 
 #+RESULTS:
-: 80000070
+| a=0                |     |             |
+| Circle center: (10 | 20) | radius: 5.0 |
 
+#+begin_src cpp :includes <stdio.h>
+  printf("%x %x %x %x\n", -2147475015, -2147445999, -2097152000, -2097131520);
+#+end_src
+
+#+RESULTS:
+: 800021b9 80009311 83000000 83005000
+
+ramdisk 的地址范围: 800021b9 80009311
+
+记得总结一下在预学习交流会议上遇到的各种问题，好做积累，这样不至于被问到回答不出来。
+
+记得翻译外文文献
+要开始写论文了。
+
+没有思路就给代码写逐行注释
+遇到一个看不懂的知识点，你的搜索路径是什么？
+- 文档
+- 课程
+- 实践
+
+要有耐心
+
+晚上记得询问，下午去哪里玩了。
+
+`clk to q` means the time it takes for register output to be stable
+
+- 毕业照
+- 毕业答辩
+- 毕业档案
+
+
+
+#+begin_example
+
+
+
+
+
+  +----------------+   ready	 +------------------+
+  |                <-------------+     	       	    |
+  |    IFU         |	         |     IDU     	    |
+  |                |        	 |             	    |
+  |                +------------->             	    |
+  +----------------+   valid	 +------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+#+end_example

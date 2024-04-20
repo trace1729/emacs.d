@@ -45,7 +45,7 @@
 ;; 快速打开todo文件
 (defun open-org()
   (interactive)
-  (find-file "~/.emacs.d/memorial/ysyx_dec_todo.org"))
+  (find-file "~/.emacs.d/memorial/ysyx_feb_todo.org"))
 
 ;; 这一行代码，将函数 open-init-file 绑定到  键上
 (global-set-key (kbd "C-c C-t") 'open-org)
